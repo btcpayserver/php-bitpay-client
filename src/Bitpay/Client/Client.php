@@ -677,15 +677,6 @@ class Client implements ClientInterface
     }
 
     protected function checkPriceAndCurrency($price, $currency)
-    {
-        $decimalPosition = strpos($price, '.');
-        if ($decimalPosition == 0) {
-            $decimalPrecision = 0;
-        } else {
-            $decimalPrecision = strlen(substr($price, $decimalPosition + 1));
-        }
-        if (($decimalPrecision > 2 && $currency != 'BTC') || $decimalPrecision > 6) {
-            throw new \Exception('Incorrect price format or currency type.');
-        }
+    {        
     }
 }
