@@ -13,23 +13,19 @@ class BitpayTest extends \PHPUnit_Framework_TestCase
     private $temp_path_pri;
     private $temp_path_pub;
     private $temp_path_root;
-    private $network_type;
 
     public function setUp()
     {
         $this->temp_path_root = 'tmp';
         $this->temp_path_pri  = $this->temp_path_root . '/key.pri';
         $this->temp_path_pub  = $this->temp_path_root . '/key.pub';
-        $this->network_type   = 'testnet';
     }
 
     public function testConstruct()
     {
         $bitpay = new \Bitpay\Bitpay(
             array(
-                'bitpay' => array(
-                    'network' => $this->network_type,
-                )
+                'bitpay' => array()
             )
         );
     }
@@ -43,11 +39,11 @@ class BitpayTest extends \PHPUnit_Framework_TestCase
     public function testGet()
     {
         $bitpay = new \Bitpay\Bitpay();
-        $this->assertInstanceOf('Bitpay\Network\Livenet', $bitpay->get('network'));
+        $this->assertInstanceOf('Bitpay\Client\Adapter\CurlAdapter', $bitpay->get('adapter'));
     }
 
     /**
-     * @expectedException Symfony\Component\DependencyInjection\Exception\InvalidArgumentException
+     * @expectedException \Symfony\Component\DependencyInjection\Exception\InvalidArgumentException
      */
     public function testGetInvalidService()
     {
@@ -61,7 +57,6 @@ class BitpayTest extends \PHPUnit_Framework_TestCase
         $bitpay = new \Bitpay\Bitpay(
             array(
                 'bitpay' => array(
-                    'network'     => 'testnet',
                     'private_key' => vfsStream::url($this->temp_path_pri),
                     'public_key'  => vfsStream::url($this->temp_path_pub),
                 )

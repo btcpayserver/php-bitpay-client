@@ -7,7 +7,6 @@
 namespace Bitpay\Client;
 
 use Bitpay\Client\Adapter\AdapterInterface;
-use Bitpay\Network\NetworkInterface;
 use Bitpay\TokenInterface;
 use Bitpay\InvoiceInterface;
 use Bitpay\PayoutInterface;
@@ -54,19 +53,13 @@ class Client implements ClientInterface
     protected $privateKey;
 
     /**
-     * @var NetworkInterface
+     * @var string
      */
-    protected $network;
+    protected $uri;
 
-    /**
-     * The network is either livenet or testnet and tells the client where to
-     * send the requests.
-     *
-     * @param NetworkInterface $network
-     */
-    public function setNetwork(NetworkInterface $network)
+    public function setUri($uri)
     {
-        $this->network = $network;
+        $this->uri = trim($uri);
     }
 
     /**
@@ -116,6 +109,51 @@ class Client implements ClientInterface
     /**
      * @inheritdoc
      */
+    protected function fillInvoiceData(InvoiceInterface $invoice, $data)
+    {
+        # BitPay returns the invoice time in milliseconds. PHP's DateTime object expects the time to be in seconds
+        $invoiceTime = is_numeric($data['invoiceTime']) ? intval($data['invoiceTime']/1000) : $data['invoiceTime'];
+        $expirationTime = is_numeric($data['expirationTime']) ? intval($data['expirationTime']/1000) : $data['expirationTime'];
+        $currentTime = is_numeric($data['currentTime']) ? intval($data['currentTime']/1000) : $data['currentTime'];
+        
+        $invoiceToken = new \Bitpay\Token();
+        $paymentUrls = new \Bitpay\PaymentUrlSet();
+
+        $invoice
+            ->setToken($invoiceToken->setToken($data['token']))
+            ->setUrl($data['url'])
+            ->setPosData(array_key_exists('posData', $data) ? $data['posData'] : '')
+            ->setStatus($data['status'])
+            ->setBtcPrice(array_key_exists('btcPrice', $data) ? $data['btcPrice'] : '')
+            ->setPrice($data['price'])
+            ->setTaxIncluded($data['taxIncluded'])
+            ->setCurrency(new \Bitpay\Currency($data['currency']))
+            ->setOrderId(array_key_exists('orderId', $data) ? $data['orderId'] : '')
+            ->setInvoiceTime($invoiceTime)
+            ->setExpirationTime($expirationTime)
+            ->setCurrentTime($currentTime)
+            ->setId($data['id'])
+            ->setBtcPaid(array_key_exists('btcPaid', $data) ? $data['btcPaid'] : '')
+            ->setAmountPaid(array_key_exists('amountPaid', $data) ? $data['amountPaid'] : '')
+            ->setRate(array_key_exists('rate', $data) ? $data['rate'] : '')
+            ->setExceptionStatus($data['exceptionStatus'])
+            ->setRefundAddresses(array_key_exists('refundAddresses', $data) ? $data['refundAddresses'] : '')
+            ->setTransactionCurrency(array_key_exists('transactionCurrency', $data) ? $data['transactionCurrency'] : null)
+            ->setPaymentTotals(array_key_exists('paymentTotals', $data) ? $data['paymentTotals'] : '')
+            ->setPaymentSubtotals(array_key_exists('paymentSubtotals', $data) ? $data['paymentSubtotals'] : '')
+            ->setExchangeRates(array_key_exists('exchangeRates', $data) ? $data['exchangeRates'] : '');
+
+        if (isset($data['paymentUrls'])) {
+            $invoice
+                ->setPaymentUrls($paymentUrls->setUrls($data['paymentUrls']));
+        }
+
+        return $invoice;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function createInvoice(InvoiceInterface $invoice)
     {
         $request = $this->createNewRequest();
@@ -130,29 +168,32 @@ class Client implements ClientInterface
         $this->checkPriceAndCurrency($item->getPrice(), $currency->getCode());
 
         $body = array(
-            'price'             => $item->getPrice(),
-            'currency'          => $currency->getCode(),
-            'posData'           => $invoice->getPosData(),
-            'notificationURL'   => $invoice->getNotificationUrl(),
-            'transactionSpeed'  => $invoice->getTransactionSpeed(),
-            'fullNotifications' => $invoice->isFullNotifications(),
-            'notificationEmail' => $invoice->getNotificationEmail(),
-            'redirectURL'       => $invoice->getRedirectUrl(),
-            'orderID'           => $invoice->getOrderId(),
-            'itemDesc'          => $item->getDescription(),
-            'itemCode'          => $item->getCode(),
-            'physical'          => $item->isPhysical(),
-            'buyerName'         => trim(sprintf('%s %s', $buyer->getFirstName(), $buyer->getLastName())),
-            'buyerAddress1'     => isset($buyerAddress[0]) ? $buyerAddress[0] : '',
-            'buyerAddress2'     => isset($buyerAddress[1]) ? $buyerAddress[1] : '',
-            'buyerCity'         => $buyer->getCity(),
-            'buyerState'        => $buyer->getState(),
-            'buyerZip'          => $buyer->getZip(),
-            'buyerCountry'      => $buyer->getCountry(),
-            'buyerEmail'        => $buyer->getEmail(),
-            'buyerPhone'        => $buyer->getPhone(),
-            'guid'              => Util::guid(),
-            'token'             => $this->token->getToken(),
+            'price'                 => $item->getPrice(),
+            'taxIncluded'           => $item->getTaxIncluded(),
+            'currency'              => $currency->getCode(),
+            'posData'               => $invoice->getPosData(),
+            'notificationURL'       => $invoice->getNotificationUrl(),
+            'transactionSpeed'      => $invoice->getTransactionSpeed(),
+            'fullNotifications'     => $invoice->isFullNotifications(),
+            'extendedNotifications' => $invoice->isExtendedNotifications(),
+            'notificationEmail'     => $invoice->getNotificationEmail(),
+            'redirectURL'           => $invoice->getRedirectUrl(),
+            'orderID'               => $invoice->getOrderId(),
+            'itemDesc'              => $item->getDescription(),
+            'itemCode'              => $item->getCode(),
+            'physical'              => $item->isPhysical(),
+            'buyerName'             => trim(sprintf('%s %s', $buyer->getFirstName(), $buyer->getLastName())),
+            'buyerAddress1'         => isset($buyerAddress[0]) ? $buyerAddress[0] : '',
+            'buyerAddress2'         => isset($buyerAddress[1]) ? $buyerAddress[1] : '',
+            'buyerCity'             => $buyer->getCity(),
+            'buyerState'            => $buyer->getState(),
+            'buyerZip'              => $buyer->getZip(),
+            'buyerCountry'          => $buyer->getCountry(),
+            'buyerEmail'            => $buyer->getEmail(),
+            'buyerPhone'            => $buyer->getPhone(),
+            'buyerNotify'           => $buyer->getNotify(),
+            'guid'                  => Util::guid(),
+            'token'                 => $this->token->getToken(),
         );
 
         $request->setBody(json_encode($body));
@@ -175,23 +216,8 @@ class Client implements ClientInterface
         }
 
         $data = $body['data'];
-        $invoiceToken = new \Bitpay\Token();
-        $paymentUrls = new \Bitpay\PaymentUrlSet();
 
-        $invoice
-            ->setToken($invoiceToken->setToken($data['token']))
-            ->setId($data['id'])
-            ->setUrl($data['url'])
-            ->setStatus($data['status'])
-            ->setBtcPrice($data['btcPrice'])
-            ->setPrice($data['price'])
-            ->setInvoiceTime($data['invoiceTime'] / 1000)
-            ->setExpirationTime($data['expirationTime'] / 1000)
-            ->setCurrentTime($data['currentTime'] / 1000)
-            ->setBtcPaid($data['btcPaid'])
-            ->setRate($data['rate'])
-            ->setExceptionStatus($data['exceptionStatus'])
-            ->setPaymentUrls($paymentUrls->setUrls($data['paymentUrls']));
+        $invoice = $this->fillInvoiceData($invoice, $data);
 
         return $invoice;
     }
@@ -544,6 +570,10 @@ class Client implements ClientInterface
             throw new \Bitpay\Client\BitpayException($this->response->getStatusCode() . ': ' . $body['error']);
         }
 
+        if($this->response->getStatusCode() >= 400) {
+            throw new \Exception('invalid status code: '. $this->response->getStatusCode());
+        }
+
         $tkn = $body['data'][0];
         $createdAt = new \DateTime();
         $pairingExpiration = new \DateTime();
@@ -596,7 +626,7 @@ class Client implements ClientInterface
         $this->request = $this->createNewRequest();
         $this->request->setMethod(Request::METHOD_GET);
 
-        if ($this->token->getFacade() === 'merchant') {
+        if ($this->token && $this->token->getFacade() === 'merchant') {
             $this->request->setPath(sprintf('invoices/%s?token=%s', $invoiceId, $this->token->getToken()));
             $this->addIdentityHeader($this->request);
             $this->addSignatureHeader($this->request);
@@ -613,31 +643,9 @@ class Client implements ClientInterface
         }
 
         $data = $body['data'];
+        
         $invoice = new \Bitpay\Invoice();
-        $invoiceToken = new \Bitpay\Token();
-        $paymentUrls = new \Bitpay\PaymentUrlSet();
-
-        $invoice
-            ->setToken($invoiceToken->setToken($data['token']))
-            ->setUrl($data['url'])
-            ->setPosData($data['posData'])
-            ->setStatus($data['status'])
-            ->setBtcPrice($data['btcPrice'])
-            ->setPrice($data['price'])
-            ->setCurrency(new \Bitpay\Currency($data['currency']))
-            ->setOrderId($data['orderId'])
-            ->setInvoiceTime($data['invoiceTime'] / 1000)
-            ->setExpirationTime($data['expirationTime'] / 1000)
-            ->setCurrentTime($data['currentTime'] / 1000)
-            ->setId($data['id'])
-            ->setBtcPaid($data['btcPaid'])
-            ->setRate($data['rate'])
-            ->setExceptionStatus($data['exceptionStatus']);
-
-        if (isset($data['paymentUrls'])) {
-            $invoice
-                ->setPaymentUrls($paymentUrls->setUrls($data['paymentUrls']));
-        }
+        $invoice = $this->fillInvoiceData($invoice, $data);
 
         return $invoice;
     }
@@ -679,15 +687,7 @@ class Client implements ClientInterface
             throw new \Exception('Please set your Private Key');
         }
 
-        if (true == property_exists($this->network, 'isPortRequiredInUrl')) {
-            if ($this->network->isPortRequiredInUrl === true) {
-                $url = $request->getUriWithPort();
-            } else {
-                $url = $request->getUri();
-            }
-        } else {
-            $url = $request->getUri();
-        }
+        $url = $request->getFullUri();
 
         $message = sprintf(
             '%s%s',
@@ -702,12 +702,16 @@ class Client implements ClientInterface
 
     /**
      * @return RequestInterface
+     *
+     * @throws BitpayException
      */
     protected function createNewRequest()
     {
+        if ($this->uri === null) {
+            throw new BitpayException('You should provider the url of your BTCPAY server');
+        }
         $request = new Request();
-        $request->setHost($this->network->getApiHost());
-        $request->setPort($this->network->getApiPort());
+        $request->setUri($this->uri);
         $this->prepareRequestHeaders($request);
 
         return $request;
@@ -734,20 +738,8 @@ class Client implements ClientInterface
     /**
      * @param string $price
      * @param string $currency
-     * @throws \Exception
      */
     protected function checkPriceAndCurrency($price, $currency)
     {
-        // Get the decimal precision of the price
-        $decimalPosition = strpos($price, '.');
-        if ($decimalPosition == 0) {
-            $decimalPrecision = 0;
-        } else {
-            $decimalPrecision = strlen(substr($price, $decimalPosition + 1));
-        }
-
-        if (($decimalPrecision > 2 && $currency != 'BTC') || $decimalPrecision > 6) {
-            throw new \Exception('Incorrect price format or currency type.');
-        }
     }
 }

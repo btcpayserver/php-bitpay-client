@@ -233,7 +233,12 @@ class Util
                 $bin .= '0';
             }
 
-            $dec = Math::div($dec, '2');
+            $prevDec = $dec;
+            $dec = Math::div($dec, 2);
+            //sanity check to avoid infinite loop
+            if (Math::cmp($prevDec, $dec) < 1) {
+                throw new \Exception('Math library has unexpected behavior, please report the following information to support@bitpay.com. Math Engine is: ' . Math::getEngineName() . '. PHP Version is: ' . phpversion() . '.');
+            }
         }
 
         return $bin;
@@ -424,13 +429,6 @@ class Util
             $requirements['PHP'] = 'Your PHP version, ' . PHP_VERSION . ', is too low. PHP version >= 5.4 is required.';
         } else {
             $requirements['PHP'] = true;
-        }
-
-        // Mcrypt Extension
-        if (!extension_loaded('mcrypt')) {
-            $requirements['Mcrypt'] = 'The Mcrypt PHP extension could not be found.';
-        } else {
-            $requirements['Mcrypt'] = true;
         }
 
         // OpenSSL Extension

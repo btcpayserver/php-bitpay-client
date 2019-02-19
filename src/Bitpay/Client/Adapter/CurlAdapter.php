@@ -77,14 +77,17 @@ class CurlAdapter implements AdapterInterface
             $errorMessage = curl_error($curl);
             curl_close($curl);
 
-            throw new \Exception('[ERROR] In CurlAdapter::sendRequest(): curl_exec failed with the error "' . $errorMessage . '".');
+            throw new \Bitpay\Client\ConnectionException('[ERROR] In CurlAdapter::sendRequest(): curl_exec failed with the error "' . $errorMessage . '".');
         }
 
         /** @var Response */
         $response = Response::createFromRawResponse($raw);
 
+        // For some unknown reason, on some machine, the status code is equal to 0
+        // If that's the case, let's just ask to curl the real http code
+        if ($response->getStatusCode() === 0)
+            $response->setStatusCode(curl_getinfo($curl, CURLINFO_HTTP_CODE));
         curl_close($curl);
-
         return $response;
     }
 
@@ -97,8 +100,7 @@ class CurlAdapter implements AdapterInterface
     private function getCurlDefaultOptions(\Bitpay\Client\Request $request)
     {
         return array(
-            CURLOPT_URL            => $request->getUri(),
-            CURLOPT_PORT           => $request->getPort(),
+            CURLOPT_URL            => $request->getFullUri(),
             CURLOPT_CUSTOMREQUEST  => $request->getMethod(),
             CURLOPT_HTTPHEADER     => $request->getHeaderFields(),
             CURLOPT_TIMEOUT        => 10,

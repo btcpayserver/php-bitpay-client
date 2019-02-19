@@ -16,17 +16,14 @@ use Bitpay\PayoutInterface;
  */
 interface ClientInterface
 {
-    const TESTNET = '0x6F';
-    const LIVENET = '0x00';
-
     /**
      * These can be changed/updated so when the request is sent to BitPay it
      * gives insight into what is making the calls.
      *
      * @see RFC2616 section 14.43 for User-Agent Format
      */
-    const NAME    = 'BitPay PHP Client';
-    const VERSION = '2.2.8';
+    const NAME    = 'BitPay PHP-Client';
+    const VERSION = '2.2.20';
 
     public function getCurrencies();
 
