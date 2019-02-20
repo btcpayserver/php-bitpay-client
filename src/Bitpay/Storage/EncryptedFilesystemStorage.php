@@ -120,7 +120,7 @@ class EncryptedFilesystemStorage implements StorageInterface
      */
     private function dataDecode($data)
     {
-        $decoded = base64_decode($data);
+        $decoded = base64_decode($data, true);
 
         if ($decoded === false) {
             throw new \Exception('[ERROR] In EncryptedFilesystemStorage::dataDecode(): Could not decode data "' . $data . '".');

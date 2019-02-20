@@ -6,8 +6,6 @@
 
 namespace Bitpay;
 
-use Bitpay\Client;
-
 /**
  * @package Bitpay
  */
@@ -27,6 +25,11 @@ class Item implements ItemInterface
      * @var float
      */
     protected $price;
+
+    /**
+     * @var float
+     */
+    protected $taxIncluded;
 
     /**
      * @var integer
@@ -90,6 +93,16 @@ class Item implements ItemInterface
     }
 
     /**
+     * @inheritdoc
+     *
+     * @return float
+     */
+    public function getTaxIncluded()
+    {
+        return $this->taxIncluded;
+    }
+
+    /**
      * @param mixed $price A float, integer, or en_US formatted numeric string
      * @return Item
      */
@@ -100,6 +113,17 @@ class Item implements ItemInterface
         }
 
         $this->price = (float)$price;
+
+        return $this;
+    }
+
+    public function setTaxIncluded($taxIncluded)
+    {
+        if (is_string($taxIncluded)) {
+            $this->checkPriceFormat($taxIncluded);
+        }
+
+        $this->taxIncluded = (float)$taxIncluded;
 
         return $this;
     }
@@ -147,12 +171,8 @@ class Item implements ItemInterface
      * values with more than 6 decimals.
      *
      * @param string $price The price value to check
-     * @throws \Exception
      */
     protected function checkPriceFormat($price)
     {
-        if (preg_match('/^[0-9]+?[\.,][0-9]{1,6}?$/', $price) !== 1) {
-            throw new \Bitpay\Client\ArgumentException('[ERROR] In Item::checkPriceFormat(): Price value must be formatted as a float.');
-        }
     }
 }

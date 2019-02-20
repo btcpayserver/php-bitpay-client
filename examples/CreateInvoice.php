@@ -29,7 +29,7 @@ $buyer
     ->setFirstName('Some')
     ->setLastName('Customer')
     ->setPhone('555-5555-5555')
-    ->setEmail('integrations@bitpay.com')
+    ->setEmail('test@test.com')
     ->setAddress(
         array(
             '123 Main St',
@@ -66,32 +66,37 @@ $currency->setCode('USD');
 $invoice->setCurrency($currency);
 
 /**
- * Create a new client. You can see the example of how to configure this using
- * a yml file as well.
+ * To load up keys that you have previously saved, you need to use the same
+ * storage engine. You also need to tell it the location of the key you want
+ * to load.
  */
-$bitpay = new \Bitpay\Bitpay(
-    array(
-        'bitpay' => array(
-            'network'              => 'testnet', // testnet or livenet, default is livenet
-            'public_key'           => getenv('HOME').'/.bitpay/api.pub',
-            'private_key'          => getenv('HOME').'/.bitpay/api.key',
-            'key_storage'          => 'Bitpay\Storage\EncryptedFilesystemStorage',
-            'key_storage_password' => 'TopSecret',
-        )
-    )
-);
+$storageEngine = new \Bitpay\Storage\FilesystemStorage();
+$privateKey    = $storageEngine->load('/tmp/private.key');
+$publicKey     = $storageEngine->load('/tmp/public.key');
+
+/**
+ * Create a new client.
+ */
+$bitpay = new \Bitpay\Bitpay();
 
 /**
  * Create the client that will be used to send requests to BitPay's API
  */
 $client = $bitpay->get('client');
 
+$client->setPrivateKey($privateKey);
+$client->setPublicKey($publicKey);
+/**
+ * Add your btcpayserver url
+ */
+$client->setUri('https://btcpay.server/');
+
 /**
  * You will need to set the token that was returned when you paired your
  * keys.
  */
 $token = new \Bitpay\Token();
-$token->setToken('Put your token here');
+$token->setToken('your token here');
 
 $client->setToken($token);
 

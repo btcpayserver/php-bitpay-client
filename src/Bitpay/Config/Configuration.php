@@ -23,7 +23,6 @@ class Configuration implements ConfigurationInterface
     private $prifilename = '/.bitpay/api.key';
     private $sinfilename = '/.bitpay/api.sin';
     private $defstorage  = 'Bitpay\Storage\EncryptedFilesystemStorage';
-    private $networks    = array('livenet', 'testnet');
     private $adapters    = array('curl', 'mock');
 
     /**
@@ -47,11 +46,6 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('sin_key')
                     ->info('SIN Filename')
                     ->defaultValue($this->getSinFilename())
-                ->end()
-                ->enumNode('network')
-                    ->values($this->networks)
-                    ->info('Network')
-                    ->defaultValue($this->networks[0])
                 ->end()
                 ->enumNode('adapter')
                     ->values($this->adapters)
