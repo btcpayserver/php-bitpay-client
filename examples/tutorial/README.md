@@ -25,7 +25,7 @@ If you need testnet bitcoin please visit a testnet faucet, e.g. https://testnet.
 
 For more information about testing, please see https://bitpay.com/docs/testing
 
-To install BitPay's latest PHP library, please follow the instructions from https://github.com/bitpay/php-bitpay-client/blob/master/README.md
+To install BitPay's latest PHP library, please follow the instructions from https://github.com/btcpayserver/php-bitpay-client/blob/master/README.md
 
 ## Script 1 & 2: configure your local installation
 The following two scripts need to be executed once. These scripts will generate your private/public keys and pair them to your BitPay merchant account:

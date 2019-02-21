@@ -1,14 +1,14 @@
 {
-    "name": "bitpay/php-client",
-    "description": "PHP Library to work with the new cryptographically secure BitPay API",
+    "name": "btcpayserver/php-bitpay-client",
+    "description": "Fork of the PHP Library to work with the new cryptographically secure BitPay API",
     "license": "MIT",
     "minimum-stability": "stable",
     "keywords": ["bitpay", "bitcoin"],
-    "homepage": "https://github.com/bitpay/php-bitpay-client",
+    "homepage": "https://github.com/btcpayserver/php-bitpay-client",
     "support": {
         "email": "support+php@bitpay.com",
-        "issues": "https://github.com/bitpay/php-bitpay-client/issues",
-        "source": "https://github.com/bitpay/php-bitpay-client"
+        "issues": "https://github.com/btcpayserver/php-bitpay-client/issues",
+        "source": "https://github.com/btcpayserver/php-bitpay-client"
     },
     "authors": [
         {
@@ -50,10 +50,5 @@
     },
     "config": {
         "bin-dir": "bin"
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.2.x-dev"
-        }
     }
 }

@@ -73,7 +73,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 Included buyer notify field (when creating an invoice)
 ### Fixed
-- Improved tutorial (https://github.com/bitpay/php-bitpay-client/tree/master/examples/tutorial)
+- Improved tutorial (https://github.com/btcpayserver/php-bitpay-client/tree/master/examples/tutorial)
 - Made fullNotifications=true default
 - Symfony v3 compatibility fixes
 - PHP 7 compatibility fixes
@@ -159,12 +159,12 @@ Included buyer notify field (when creating an invoice)
 ### Changed
 - Client library now uses BitPay's new API
 
-[unreleased]: https://github.com/bitpay/php-bitpay-client/compare/v2.2.5...HEAD
-[2.2.5]: https://github.com/bitpay/php-bitpay-client/compare/v2.2.4...v2.2.5
-[2.2.4]: https://github.com/bitpay/php-bitpay-client/compare/v2.2.3...v2.2.4
-[2.2.3]: https://github.com/bitpay/php-bitpay-client/compare/v2.2.2...v2.2.3
-[2.2.2]: https://github.com/bitpay/php-bitpay-client/compare/v2.2.1...v2.2.2
-[2.2.1]: https://github.com/bitpay/php-bitpay-client/compare/v2.2.0...v2.2.1
-[2.2.0]: https://github.com/bitpay/php-bitpay-client/compare/v2.1.1...v2.2.0
-[2.1.1]: https://github.com/bitpay/php-bitpay-client/compare/v2.1.0...v2.1.1
-[2.1.0]: https://github.com/bitpay/php-bitpay-client/compare/v2.0.0...v2.1.0
+[unreleased]: https://github.com/btcpayserver/php-bitpay-client/compare/v2.2.5...HEAD
+[2.2.5]: https://github.com/btcpayserver/php-bitpay-client/compare/v2.2.4...v2.2.5
+[2.2.4]: https://github.com/btcpayserver/php-bitpay-client/compare/v2.2.3...v2.2.4
+[2.2.3]: https://github.com/btcpayserver/php-bitpay-client/compare/v2.2.2...v2.2.3
+[2.2.2]: https://github.com/btcpayserver/php-bitpay-client/compare/v2.2.1...v2.2.2
+[2.2.1]: https://github.com/btcpayserver/php-bitpay-client/compare/v2.2.0...v2.2.1
+[2.2.0]: https://github.com/btcpayserver/php-bitpay-client/compare/v2.1.1...v2.2.0
+[2.1.1]: https://github.com/btcpayserver/php-bitpay-client/compare/v2.1.0...v2.1.1
+[2.1.0]: https://github.com/btcpayserver/php-bitpay-client/compare/v2.0.0...v2.1.0

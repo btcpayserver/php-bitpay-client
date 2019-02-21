@@ -1,4 +1,4 @@
-bitpay/php-bitpay-client
+btcpayserver/php-bitpay-client
 =================
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/bitpay/php-bitpay-client/master/LICENSE.md)
@@ -89,11 +89,11 @@ and the ``examples`` directory for examples on using this library. You should
 be able to run all the examples by running ``php examples/File.php``.
 
 The ``examples/tutorial`` directory provides four scripts that guide you with creating a BitPay invoice:
-https://github.com/bitpay/php-bitpay-client/blob/master/examples/tutorial/
+https://github.com/btcpayserver/php-bitpay-client/blob/master/examples/tutorial/
 
 # Support
 
-* https://github.com/bitpay/php-bitpay-client/issues
+* https://github.com/btcpayserver/php-bitpay-client/issues
 * https://support.bitpay.com
 
 When you receive blank IPN responses, please check https://support.bitpay.com/hc/en-us/articles/115003025706-Why-am-I-getting-a-blank-IPN-post-response-from-BitPay-when-using-PHP-
