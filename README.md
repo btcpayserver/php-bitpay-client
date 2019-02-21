@@ -56,23 +56,6 @@ See https://support.bitpay.com/hc/en-us/articles/115003001063-How-do-I-configure
 
 # Usage
 
-## Autoloader
-
-To use the library's autoloader (which doesn't include composer dependencies)
-instead of composer's autoloader, use the following code:
-
-```php
-<?php
-$autoloader = __DIR__ . '/relative/path/to/Bitpay/Autoloader.php';
-
-if (file_exists($autoloader) && is_readable($autoloader)) {
-    require_once $autoloader;
-    \Bitpay\Autoloader::register();
-} else {
-    throw new Exception('BitPay Library could not be loaded');
-}
-```
-
 ## Documentation
 
 Please see the ``docs`` directory for information on how to use this library
