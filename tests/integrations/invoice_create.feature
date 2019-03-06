@@ -1,11 +1,11 @@
 #create_invoices.feature
 Feature: creating an invoice
-  The user won't get any money 
+  The user won't get any money
   If they can't
   Create Invoices
 
   Background:
-    Given the user is authenticated with BitPay
+    Given the user is authenticated with BTCPayServer
 
   @javascript
   Scenario Outline: The request is correct
@@ -19,7 +19,7 @@ Feature: creating an invoice
   @javascript
   Scenario Outline: The invoice contains illegal characters
     When the user creates an invoice for <price> <currency>
-    Then they will receive a "Bitpay\Client\ArgumentException" matching <message>
+    Then they will receive a "BTCPayServer\Client\ArgumentException" matching <message>
   Examples:
     | price   | currency  | message                                      |
     | "1,023" | "USD"     | 'Price must be formatted as a float'         |

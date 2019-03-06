@@ -1,10 +1,10 @@
 <?php
 /**
- * @license Copyright 2011-2014 BitPay Inc., MIT License
- * see https://github.com/bitpay/php-bitpay-client/blob/master/LICENSE
+ * @license Copyright 2019 BTCPayServer, MIT License
+ * see https://github.com/btcpayserver/php-bitpay-client/blob/master/LICENSE
  */
 
-namespace Bitpay;
+namespace BTCPayServer;
 
 class PrivateKeyTest extends \PHPUnit_Framework_TestCase
 {
@@ -16,19 +16,19 @@ class PrivateKeyTest extends \PHPUnit_Framework_TestCase
 
     public function testCreate()
     {
-        $this->assertInstanceOf('Bitpay\PrivateKey', PrivateKey::create());
+        $this->assertInstanceOf('BTCPayServer\PrivateKey', PrivateKey::create());
     }
 
     public function testGenerate()
     {
         if (extension_loaded('gmp')) {
-            \Bitpay\Math\Math::setEngine(new \Bitpay\Math\GmpEngine());
+            \BTCPayServer\Math\Math::setEngine(new \BTCPayServer\Math\GmpEngine());
         } elseif (extension_loaded('bcmath')) {
-            \Bitpay\Math\Math::setEngine(new \Bitpay\Math\BcEngine());
+            \BTCPayServer\Math\Math::setEngine(new \BTCPayServer\Math\BcEngine());
         } else {
-            \Bitpay\Math\Math::setEngine(new \Bitpay\Math\RpEngine());
+            \BTCPayServer\Math\Math::setEngine(new \BTCPayServer\Math\RpEngine());
         }
-        
+
         $priKey = new PrivateKey();
         $this->assertNotNull($priKey);
 
@@ -116,7 +116,7 @@ class PrivateKeyTest extends \PHPUnit_Framework_TestCase
         $priKey->generate();
 
         // Make sure not exceptions are thrown
-        $priKey->sign('BitPay');
+        $priKey->sign('BTCPayServer');
     }
 
     public function testHasValidHex()
@@ -148,7 +148,7 @@ class PrivateKeyTest extends \PHPUnit_Framework_TestCase
         $key       = new PrivateKey();
         $publicKey = $key->getPublicKey();
 
-        $this->assertInstanceOf('Bitpay\PublicKey', $publicKey);
+        $this->assertInstanceOf('BTCPayServer\PublicKey', $publicKey);
     }
 
     public function testPemDecode()
