@@ -155,6 +155,10 @@ class Invoice implements InvoiceInterface
      */
     protected $paymentTotals;
 
+    /**
+     * @var array
+     */
+    protected $paymentCurrencies;
 
     /**
      * @inheritdoc
@@ -918,5 +922,22 @@ class Invoice implements InvoiceInterface
         }
 
         return $this;
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function getPaymentCurrencies() {
+      return $this->paymentCurrencies;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setPaymentCurrencies($paymentCurrencies) {
+      $this->paymentCurrencies = $paymentCurrencies;
+
+      return $this;
     }
 }

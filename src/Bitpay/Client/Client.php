@@ -183,6 +183,7 @@ class Client implements ClientInterface
             'guid'              => Util::guid(),
             'nonce'             => Util::nonce(),
             'token'             => $this->token->getToken(),
+            'paymentCurrencies' => $invoice->getPaymentCurrencies(),
         );
 
         foreach(array_keys($body) as $key) {
