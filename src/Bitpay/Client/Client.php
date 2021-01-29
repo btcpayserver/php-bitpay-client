@@ -121,7 +121,7 @@ class Client implements ClientInterface
             ->setBtcPrice(array_key_exists('btcPrice', $data) ? $data['btcPrice'] : '')
             ->setPrice($data['price'])
             ->setTaxIncluded($data['taxIncluded'])
-            ->setCurrency(new \Bitpay\Currency($data['currency']))
+            ->setCurrency(new \Bitpay\CurrencyUnrestricted($data['currency']))
             ->setOrderId(array_key_exists('orderId', $data) ? $data['orderId'] : '')
             ->setInvoiceTime($invoiceTime)
             ->setExpirationTime($expirationTime)
