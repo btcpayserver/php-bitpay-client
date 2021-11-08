@@ -1,3 +1,7 @@
+# === Warning ===
+
+This is the old BitPay based PHP client and should be considered deprecated (even though it currently still works). If you are building something from scratch, [use the new Greenfield API](https://github.com/btcpayserver/btcpayserver-greenfield-php).
+
 bitpay/php-bitpay-client
 =================
 
